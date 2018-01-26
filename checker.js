@@ -1,18 +1,39 @@
 
 const fetch = require('node-fetch')
 
-function check(url, invocationParameters,  expectedResultData, expectedResultStatus) {
+exports.check = function (url, invocationParameters,  expectedResultData, expectedResultStatus) {
 
-    rispostaFetch = (logfetch(url, { method: "get" })
-            .then((resp) => resp.json()) // Transform the data into json
-            .then(function(data) {
-                // Here you get the data to modify as you please
-                let authors = data.results; // Get the results
-                return authors.map(function(author) { // Map through the results and for each run the code below
-                    console.log(author);
-                })
-            })
-            .catch( error => console.error(error) );); // If there is any error you will catch them here
+    //formulo l'url per la richiesta
+    //non riesco a definire Request e Headers
+    /*var richiesta = new Request(url, {
+               method: "get",
+               headers: new Headers({
+                  "Content-Type": "application/json"
+               }),
+               query: JSON.stringify({
+                  parameters: Object.keys(invocationParameters)
+               })
+            });*/
+
+    //elaboro la richiesta fetch
+    rispostaFetch = fetch(url).then(response => {
+               if (response.ok) {
+                    console.log("Contenuto ricevuto");
+                    return response.json;
+               }
+               if (response.status >= 100 && response.status < 200) {
+                  console.log("Informazioni per il client");
+               }
+               if (response.status >= 300 && response.status < 399) {
+                  console.log("Redirezione");
+               }
+               if (response.status >= 400 && response.status < 499) {
+                  console.log("Richiesta errata");
+               }
+               if (response.status >= 500 && response.status < 599) {
+                  console.log("Errore sul server");
+               }
+            }).catch(error => console.log("Si è verificato un errore!"));
 
     //rispostaFetch dovrebbe essere un json
 
@@ -31,9 +52,7 @@ function check(url, invocationParameters,  expectedResultData, expectedResultSta
 
     return checkResult;
 
-
-
-}
+};
 
 
 // funzione che confronta due oggetti semplici e verifica se actual contiene tutti gli attributi di expected, e se per
@@ -46,5 +65,3 @@ function compareResults(expected, actual) {
     }
     return true
 }
-
-module.exports = check

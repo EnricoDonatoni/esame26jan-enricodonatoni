@@ -2,7 +2,7 @@
 const express = require('express'),
     bodyParser = require('body-parser');
 
-var modulo = require("./checker.js");
+var modulo = require('./checker.js');
 
 
 const app = express();
@@ -23,8 +23,19 @@ app.post('/check',function (req, res) {
 	var expectedResultData = req.body.expectedResultData || req.query.expectedResultData;
 	var expectedResultStatus = req.body.expectedResultStatus || req.query.expectedResultStatus;
 
+	//res: modulo.check(url, invocationParameters, expectedResultData, expectedResultStatus)
 
-    res.json({res: modulo.check(url, invocationParameters, expectedResultData, expectedResultStatus)});
+    /*res.json({
+    	url: url,
+    	invocationParameters: invocationParameters,
+    	expectedResultData: expectedResultData,
+    	expectedResultStatus: expectedResultStatus
+    });*/
+    var rispostaCheck = modulo.check(url, invocationParameters, expectedResultData, expectedResultStatus);
+
+    res.json({
+    	res: rispostaCheck
+    });
 })
 
 app.listen(app.get('port'), function() {
